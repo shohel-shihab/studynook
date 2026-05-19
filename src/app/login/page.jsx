@@ -2,12 +2,32 @@
 
 import { Button, Card, Input, Separator } from "@heroui/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
-
+import { authClient } from "@/lib/auth-client";
 export default function LoginPage() {
+  const router=useRouter();
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    
+    const { data, error } = await authClient.signIn.email({
+      email,
+      password
+    })
+    // if (error) {
+    //   toast.error(error.message || "Login failed");
+    //   return;
+    // }
+    // toast.success("Login successful");
+    router.push("/")
+
+
+  }
   return (
     <section className="min-h-screen bg-[#f7f7fc] flex items-center justify-center px-4 py-10">
-      
+
       <div className="w-full max-w-md">
 
         {/* Card */}
@@ -26,12 +46,13 @@ export default function LoginPage() {
             </div>
 
             {/* Form */}
-            <form className="mt-10 space-y-6">
+            <form onSubmit={handleLogin} className="mt-10 space-y-6">
 
               {/* Email */}
               <div>
                 <Input
                   type="email"
+                  name="email"
                   label="Email"
                   placeholder="Enter your email"
                   variant="bordered"
@@ -51,6 +72,7 @@ export default function LoginPage() {
                 <Input
                   type="password"
                   label="Password"
+                  name="password"
                   placeholder="Enter your password"
                   variant="bordered"
                   radius="lg"
