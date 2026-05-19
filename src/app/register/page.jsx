@@ -90,6 +90,12 @@ export default function RegisterPage() {
         }
     };
 
+    const googleSignIn = async () => {
+        await authClient.signIn.social({
+            provider: "google",
+        });
+    }
+
     return (
         <section className="min-h-screen bg-[#f7f7fc] flex items-center justify-center px-4 py-10">
 
@@ -235,6 +241,7 @@ export default function RegisterPage() {
 
                         {/* Google Register */}
                         <Button
+                            onClick={googleSignIn}
                             size="lg"
                             radius="lg"
                             variant="bordered"

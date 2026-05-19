@@ -6,12 +6,12 @@ import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { authClient } from "@/lib/auth-client";
 export default function LoginPage() {
-  const router=useRouter();
+  const router = useRouter();
   const handleLogin = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    
+
     const { data, error } = await authClient.signIn.email({
       email,
       password
@@ -22,8 +22,12 @@ export default function LoginPage() {
     // }
     // toast.success("Login successful");
     router.push("/")
+  }
 
-
+  const googleSignIn = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+    });
   }
   return (
     <section className="min-h-screen bg-[#f7f7fc] flex items-center justify-center px-4 py-10">
@@ -115,6 +119,7 @@ export default function LoginPage() {
 
             {/* Google Login */}
             <Button
+              onClick={googleSignIn}
               size="lg"
               radius="lg"
               variant="bordered"
