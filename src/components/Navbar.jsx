@@ -3,18 +3,34 @@ import Image from "next/image";
 import Link from "next/link";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import { useState } from "react";
-
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation";
+import { Avatar } from "@heroui/react";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  const userData = authClient.useSession();
+  const user = userData.data?.user;
+  const logOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login");
+        },
+      },
+    });
+  }
+
 
   return (
     <nav className="w-full border-b bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Navbar Container */}
         <div className="flex items-center justify-between h-20">
-          
+
           {/* Left Side Logo */}
           <Link href="/" className="flex items-center">
             <Image
@@ -44,7 +60,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Side Buttons Desktop */}
-          <div className="hidden md:flex items-center gap-4">
+          {!user && <div className="hidden md:flex items-center gap-4">
             <Link
               href="/login"
               className="px-5 py-2 border border-gray-300 rounded-lg font-medium hover:bg-gray-100 transition duration-300"
@@ -58,7 +74,20 @@ export default function Navbar() {
             >
               Register
             </Link>
-          </div>
+          </div>}
+          {user && <div className="hidden md:flex items-center gap-4">
+
+            <Link
+              href="/register"
+              className="px-5 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition duration-300"
+            >
+              <button onClick={logOut}>SignOut</button>
+            </Link>
+            <Avatar>
+                <Avatar.Image alt="John Doe" src={user?.image} referrerPolicy="no-referrer" />
+              </Avatar>
+          </div>}
+
 
           {/* Mobile Menu Button */}
           <button
@@ -73,7 +102,7 @@ export default function Navbar() {
         {open && (
           <div className="md:hidden pb-5">
             <div className="flex flex-col gap-4">
-              
+
               <Link
                 href="/"
                 className="text-gray-700 font-medium hover:text-black"
